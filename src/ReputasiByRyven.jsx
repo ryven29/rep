@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
+import bg from "../assets/download.jpeg";
 
 export default function ReputasiByRyven() {
   const [reputations, setReputations] = useState([]);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
 
-  // Load reputations from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem("reputations");
     if (stored) {
@@ -13,7 +13,6 @@ export default function ReputasiByRyven() {
     }
   }, []);
 
-  // Save reputations to localStorage on change
   useEffect(() => {
     localStorage.setItem("reputations", JSON.stringify(reputations));
   }, [reputations]);
@@ -29,25 +28,12 @@ export default function ReputasiByRyven() {
     }
   };
 
-  const clearReputations = () => {
-    setReputations([]);
-    localStorage.removeItem("reputations");
-  };
-
-  const exportReputations = () => {
-    const blob = new Blob([JSON.stringify(reputations, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'reputasi-by-ryven.json';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-6">
+    <div
+      className="min-h-screen bg-cover bg-center p-6"
+      style={{ backgroundImage: `url(${bg})` }}
+    >
+      <div className="max-w-xl mx-auto bg-white/80 shadow-lg rounded-2xl p-6 border-2 border-black">
         <h1 className="text-3xl font-bold text-center mb-6 text-blue-600">
           Reputasi by Ryven
         </h1>
@@ -73,31 +59,16 @@ export default function ReputasiByRyven() {
           >
             Tambahkan Reputasi
           </button>
-
-          <div className="flex justify-between space-x-2">
-            <button
-              onClick={clearReputations}
-              className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition"
-            >
-              Hapus Semua
-            </button>
-            <button
-              onClick={exportReputations}
-              className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition"
-            >
-              Ekspor JSON
-            </button>
-          </div>
         </div>
 
         <div className="mt-8 space-y-4">
           {reputations.length === 0 ? (
-            <p className="text-center text-gray-500">Belum ada reputasi.</p>
+            <p className="text-center text-gray-600">Belum ada reputasi.</p>
           ) : (
             reputations.map((rep) => (
               <div
                 key={rep.id}
-                className="bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm"
+                className="bg-white border border-black rounded-xl p-4 shadow-sm"
               >
                 <p className="font-semibold text-gray-800">{rep.name}</p>
                 <p className="text-sm text-gray-600">{rep.message}</p>
