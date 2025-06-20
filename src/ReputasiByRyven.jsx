@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import bg from "../assets/download.jpeg";
 
 export default function ReputasiByRyven() {
   const [reputations, setReputations] = useState([]);
@@ -31,7 +30,7 @@ export default function ReputasiByRyven() {
   return (
     <div
       className="min-h-screen bg-cover bg-center p-6"
-      style={{ backgroundImage: `url(${bg})` }}
+      style={{ backgroundImage: `url(https://files.catbox.moe/v6uiyz.jpeg)` }}
     >
       <div className="max-w-xl mx-auto bg-white/80 shadow-lg rounded-2xl p-6 border-2 border-black">
         <h1 className="text-3xl font-bold text-center mb-6 text-blue-600">
