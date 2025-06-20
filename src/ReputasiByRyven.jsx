@@ -1,9 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function ReputasiByRyven() {
   const [reputations, setReputations] = useState([]);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
+
+  // Load reputations from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("reputations");
+    if (stored) {
+      setReputations(JSON.parse(stored));
+    }
+  }, []);
+
+  // Save reputations to localStorage on change
+  useEffect(() => {
+    localStorage.setItem("reputations", JSON.stringify(reputations));
+  }, [reputations]);
 
   const addReputation = () => {
     if (name.trim() && message.trim()) {
@@ -14,6 +27,22 @@ export default function ReputasiByRyven() {
       setName("");
       setMessage("");
     }
+  };
+
+  const clearReputations = () => {
+    setReputations([]);
+    localStorage.removeItem("reputations");
+  };
+
+  const exportReputations = () => {
+    const blob = new Blob([JSON.stringify(reputations, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'reputasi-by-ryven.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -44,6 +73,21 @@ export default function ReputasiByRyven() {
           >
             Tambahkan Reputasi
           </button>
+
+          <div className="flex justify-between space-x-2">
+            <button
+              onClick={clearReputations}
+              className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition"
+            >
+              Hapus Semua
+            </button>
+            <button
+              onClick={exportReputations}
+              className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition"
+            >
+              Ekspor JSON
+            </button>
+          </div>
         </div>
 
         <div className="mt-8 space-y-4">
