@@ -5,6 +5,7 @@ export default function ReputasiByRyven() {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState(0);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("reputations");
@@ -38,10 +39,15 @@ export default function ReputasiByRyven() {
     </span>
   );
 
+  const users = Array.from(new Set(reputations.map(rep => rep.name)));
+  const reputationsByUser = selectedUser
+    ? reputations.filter(rep => rep.name === selectedUser)
+    : reputations;
+
   return (
     <div
       className="min-h-screen bg-cover bg-center p-6"
-      style={{ backgroundImage: `url(https://files.catbox.moe/1nw19y.jpg)` }}
+      style={{ backgroundImage: `url(https://files.catbox.moe/v6uiyz.jpeg)` }}
     >
       <div className="max-w-xl mx-auto bg-white/80 shadow-lg rounded-2xl p-6 border-2 border-black">
         <h1 className="text-3xl font-bold text-center mb-6 text-blue-600">
@@ -76,23 +82,44 @@ export default function ReputasiByRyven() {
           </button>
         </div>
 
-        <div className="mt-8 space-y-4">
-          {reputations.length === 0 ? (
-            <p className="text-center text-gray-600">Belum ada reputasi.</p>
-          ) : (
-            reputations.map((rep) => (
-              <div
-                key={rep.id}
-                className="bg-white border border-black rounded-xl p-4 shadow-sm"
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-2 text-center">Lihat Reputasi per Pengguna</h2>
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            <button
+              onClick={() => setSelectedUser(null)}
+              className={`px-3 py-1 rounded-full border ${selectedUser === null ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'}`}
+            >
+              Semua
+            </button>
+            {users.map(user => (
+              <button
+                key={user}
+                onClick={() => setSelectedUser(user)}
+                className={`px-3 py-1 rounded-full border ${selectedUser === user ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'}`}
               >
-                <p className="font-semibold text-gray-800">{rep.name}</p>
-                <p className="text-sm text-gray-600">{rep.message}</p>
-                <div className="text-yellow-400 text-lg">
-                  {"★".repeat(rep.rating)}{"☆".repeat(5 - rep.rating)}
+                {user}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-4">
+            {reputationsByUser.length === 0 ? (
+              <p className="text-center text-gray-600">Belum ada reputasi.</p>
+            ) : (
+              reputationsByUser.map((rep) => (
+                <div
+                  key={rep.id}
+                  className="bg-white border border-black rounded-xl p-4 shadow-sm"
+                >
+                  <p className="font-semibold text-gray-800">{rep.name}</p>
+                  <p className="text-sm text-gray-600">{rep.message}</p>
+                  <div className="text-yellow-400 text-lg">
+                    {"★".repeat(rep.rating)}{"☆".repeat(5 - rep.rating)}
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>
