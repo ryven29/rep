@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  "https://nnbpuxxokollpmkkfvhl.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5uYnB1eHhva29sbHBta2tmdmhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0MDQ3OTYsImV4cCI6MjA2NTk4MDc5Nn0.41ltW82Gdv0lYXyx7KmTKblH0ehe9pDUHLcSXTci1sM"
+);
 
 export default function ReputasiByRyven() {
   const [reputations, setReputations] = useState([]);
@@ -8,25 +14,30 @@ export default function ReputasiByRyven() {
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("reputations");
-    if (stored) {
-      setReputations(JSON.parse(stored));
-    }
+    fetchReputations();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("reputations", JSON.stringify(reputations));
-  }, [reputations]);
+  const fetchReputations = async () => {
+    const { data, error } = await supabase
+      .from("reputations")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error) {
+      setReputations(data);
+    }
+  };
 
-  const addReputation = () => {
+  const addReputation = async () => {
     if (name.trim() && message.trim() && rating > 0) {
-      setReputations([
-        { id: Date.now(), name, message, rating },
-        ...reputations,
+      const { error } = await supabase.from("reputations").insert([
+        { name, message, rating },
       ]);
-      setName("");
-      setMessage("");
-      setRating(0);
+      if (!error) {
+        fetchReputations();
+        setName("");
+        setMessage("");
+        setRating(0);
+      }
     }
   };
 
